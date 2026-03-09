@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "contextos"
+version = "0.1.0"
+description = "The unified context intelligence layer for AI agents. One pip install. Every capability. Nothing missing."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "John Williams", email = "john@itallstartedwithaidea.com" }
+]
+keywords = [
+    "mcp", "model-context-protocol", "ai-agents", "llm", "rag",
+    "memory", "context-management", "ai-agent-memory", "langchain",
+    "claude", "openai", "retrieval-augmented-generation"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.0.0",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.27.0",
+    "pydantic>=2.0.0",
+    "sqlalchemy>=2.0.0",
+    "aiosqlite>=0.20.0",
+    "httpx>=0.27.0",
+    "tiktoken>=0.7.0",
+    "numpy>=1.26.0",
+    "rank-bm25>=0.2.2",
+]
+
+[project.optional-dependencies]
+full = [
+    "pgvector>=0.2.5",
+    "psycopg2-binary>=2.9.9",
+    "composio-core>=0.5.0",
+    "ragflow-client>=0.1.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "black>=24.0.0",
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+]
+
+[project.scripts]
+contextos = "contextOS.cli:main"
+
+[project.urls]
+Homepage = "https://contextOS.dev"
+Repository = "https://github.com/itallstartedwithaidea/contextOS"
+Documentation = "https://github.com/itallstartedwithaidea/contextOS/wiki"
+"Bug Tracker" = "https://github.com/itallstartedwithaidea/contextOS/issues"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+strict = false
+ignore_missing_imports = true

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContextOS — The Unified Context Intelligence Layer for AI Agents</title>
+<meta name="description" content="ContextOS is the unified MCP server and context intelligence layer for AI agents. Absorbs ragflow, claude-mem, composio, context7, modelcontextprotocol/servers, and get-shit-done into one pip install. Memory, retrieval, tool execution, planning, and orchestration in a single package.">
+<meta name="keywords" content="MCP server, AI agent memory, LLM context management, RAG agent, context intelligence, model context protocol, AI agent framework, claude memory, composio alternative, ragflow alternative">
+<meta property="og:title" content="ContextOS — The Unified Context Intelligence Layer">
+<meta property="og:description" content="One pip install. Memory, retrieval, tools, planning, and orchestration. Nothing missing.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://contextOS.dev">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #07070C;
+    --surface: #0F0F18;
+    --surface2: #16162A;
+    --border: rgba(255,255,255,0.07);
+    --text: #E8E8F0;
+    --muted: rgba(232,232,240,0.45);
+    --red: #FF3D00;
+    --orange: #FF7A40;
+    --purple: #7B2FFF;
+    --blue: #00A3FF;
+    --green: #00E57A;
+    --yellow: #FFB800;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  code, pre, .mono { font-family: 'Fira Code', monospace; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(7,7,12,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+  .logo span { color: var(--red); }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; letter-spacing: 0.5px; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--red); color: #fff; border: none;
+    padding: 10px 22px; border-radius: 4px;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px;
+    cursor: pointer; text-decoration: none; transition: opacity 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,61,0,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,61,0,0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  }
+  .hero-glow {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%);
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,61,0,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,61,0,0.1); border: 1px solid rgba(255,61,0,0.3);
+    color: var(--orange); padding: 6px 16px; border-radius: 100px;
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    margin-bottom: 32px; position: relative;
+  }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  h1 {
+    font-size: clamp(52px, 7vw, 96px);
+    font-weight: 800; line-height: 0.95;
+    letter-spacing: -3px; text-align: center;
+    position: relative; margin-bottom: 28px;
+  }
+  h1 .accent { color: var(--red); }
+  h1 .dim { color: rgba(232,232,240,0.35); }
+  .hero-sub {
+    font-size: 18px; color: var(--muted); text-align: center;
+    max-width: 560px; margin-bottom: 48px; position: relative;
+    line-height: 1.7;
+  }
+  .hero-actions { display: flex; gap: 16px; position: relative; }
+  .btn-primary {
+    background: var(--red); color: #fff; border: none;
+    padding: 16px 32px; border-radius: 4px;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
+    cursor: pointer; transition: all 0.2s; text-decoration: none;
+    letter-spacing: 0.5px;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--border);
+    padding: 16px 32px; border-radius: 4px;
+    font-family: 'Fira Code', monospace; font-size: 14px;
+    cursor: pointer; transition: all 0.2s; text-decoration: none;
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+  .install-bar {
+    margin-top: 56px; position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px 24px; display: flex; align-items: center; gap: 16px;
+    font-family: 'Fira Code', monospace;
+  }
+  .install-prompt { color: var(--green); font-size: 13px; }
+  .install-cmd { color: var(--text); font-size: 14px; }
+  .install-copy {
+    margin-left: auto; background: none; border: 1px solid var(--border);
+    color: var(--muted); padding: 6px 14px; border-radius: 4px;
+    font-family: 'Fira Code', monospace; font-size: 11px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .install-copy:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+  /* STAT BAR */
+  .stat-bar {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .stat {
+    padding: 28px 48px; text-align: center;
+    border-right: 1px solid var(--border);
+    flex: 1; min-width: 140px;
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+  .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 1.5px; margin-top: 4px; }
+
+  /* SECTION */
+  section { padding: 96px 48px; max-width: 1100px; margin: 0 auto; }
+  .section-tag { font-size: 10px; letter-spacing: 3px; color: var(--red); font-weight: 700; margin-bottom: 16px; }
+  h2 { font-size: clamp(32px, 4vw, 52px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 16px; }
+  .section-sub { font-size: 17px; color: var(--muted); max-width: 560px; margin-bottom: 56px; line-height: 1.7; }
+
+  /* LAYERS GRID */
+  .layers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .layer-card { background: var(--surface); padding: 32px; transition: background 0.2s; }
+  .layer-card:hover { background: var(--surface2); }
+  .layer-icon { font-size: 24px; margin-bottom: 16px; }
+  .layer-name { font-size: 11px; letter-spacing: 2px; font-weight: 700; margin-bottom: 10px; }
+  .layer-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+  .layer-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-size: 10px; font-family: 'Fira Code', monospace; padding: 3px 10px; border-radius: 100px; }
+  .chip-new { background: rgba(255,61,0,0.12); color: var(--orange); border: 1px solid rgba(255,61,0,0.25); }
+  .chip-absorbed { background: rgba(0,229,122,0.08); color: var(--green); border: 1px solid rgba(0,229,122,0.2); }
+
+  /* SOURCE REPOS */
+  .repos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .repo-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 24px; transition: all 0.2s; text-decoration: none; color: inherit;
+    display: block;
+  }
+  .repo-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+  .repo-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .repo-name { font-size: 14px; font-weight: 700; font-family: 'Fira Code', monospace; }
+  .repo-stars { font-size: 12px; color: var(--yellow); font-family: 'Fira Code', monospace; }
+  .repo-desc { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 16px; }
+  .repo-gap { font-size: 11px; color: rgba(255,122,64,0.8); padding: 8px 12px; background: rgba(255,61,0,0.06); border-radius: 4px; border-left: 2px solid var(--red); }
+
+  /* SPARRING */
+  .sparring-demo {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    overflow: hidden; max-width: 700px;
+  }
+  .demo-header { padding: 14px 20px; background: var(--surface2); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .demo-title { font-size: 12px; color: var(--muted); font-family: 'Fira Code', monospace; }
+  .demo-body { padding: 24px; }
+  .demo-line { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+  .demo-key { font-size: 10px; font-family: 'Fira Code', monospace; font-weight: 700; letter-spacing: 1px; min-width: 100px; padding-top: 2px; }
+  .demo-val { font-size: 13px; color: var(--muted); font-family: 'Fira Code', monospace; line-height: 1.5; }
+  .verdict-hold { color: var(--yellow); font-size: 18px; font-weight: 800; font-family: 'Syne', sans-serif; }
+  .verdict-proceed { color: var(--green); font-size: 18px; font-weight: 800; font-family: 'Syne', sans-serif; }
+
+  /* TOOLS GRID */
+  .tools-count { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .tool-cat { background: var(--surface); padding: 24px 20px; text-align: center; }
+  .tool-cat-num { font-size: 36px; font-weight: 800; }
+  .tool-cat-name { font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-top: 4px; }
+
+  /* INSTALL */
+  .install-section {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 64px; text-align: center;
+    margin: 0 48px 96px; position: relative; overflow: hidden;
+  }
+  .install-section::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center top, rgba(255,61,0,0.08) 0%, transparent 60%);
+  }
+  .install-section h2 { font-size: 40px; letter-spacing: -1px; margin-bottom: 12px; position: relative; }
+  .install-section p { color: var(--muted); font-size: 16px; margin-bottom: 40px; position: relative; }
+  .code-block {
+    background: var(--black); border: 1px solid var(--border); border-radius: 8px;
+    padding: 20px 28px; display: inline-block; margin: 0 auto 32px;
+    font-family: 'Fira Code', monospace; font-size: 16px; position: relative;
+    text-align: left;
+  }
+  .code-comment { color: rgba(255,255,255,0.25); }
+  .code-green { color: var(--green); }
+  .code-blue { color: var(--blue); }
+  .code-orange { color: var(--orange); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 24px;
+  }
+  .footer-logo { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+  .footer-logo span { color: var(--red); }
+  .footer-links { display: flex; gap: 32px; flex-wrap: wrap; }
+  .footer-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text); }
+  .footer-credit { font-size: 11px; color: rgba(255,255,255,0.2); }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    h1 { letter-spacing: -2px; }
+    section { padding: 64px 24px; }
+    .stat { padding: 20px 24px; }
+    .tools-count { grid-template-columns: repeat(3, 1fr); }
+    .install-section { padding: 40px 24px; margin: 0 24px 64px; }
+    footer { flex-direction: column; padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Context<span>OS</span></div>
+  <div class="nav-links">
+    <a href="#layers">Architecture</a>
+    <a href="#sources">Origins</a>
+    <a href="#sparring">Sparring Hook</a>
+    <a href="#tools">47 Tools</a>
+    <a href="https://github.com/itallstartedwithaidea/contextOS/wiki" target="_blank">Wiki</a>
+  </div>
+  <a href="https://github.com/itallstartedwithaidea/contextOS" class="nav-cta" target="_blank">GitHub →</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="badge">
+    <span class="badge-dot"></span>
+    MCP COMPATIBLE · PYTHON 3.10+ · MIT LICENSE
+  </div>
+
+  <h1>
+    The context layer<br>
+    <span class="accent">AI agents</span><br>
+    <span class="dim">were missing.</span>
+  </h1>
+
+  <p class="hero-sub">
+    ContextOS unifies six leading open-source repos into one coherent platform. Memory. Retrieval. Tool execution. Planning. Orchestration. One pip install.
+  </p>
+
+  <div class="hero-actions">
+    <a href="https://github.com/itallstartedwithaidea/contextOS" class="btn-primary" target="_blank">View on GitHub</a>
+    <a href="https://github.com/itallstartedwithaidea/contextOS/wiki" class="btn-secondary" target="_blank">Read the Docs</a>
+  </div>
+
+  <div class="install-bar">
+    <span class="install-prompt">$</span>
+    <span class="install-cmd">pip install contextos</span>
+    <button class="install-copy" onclick="navigator.clipboard.writeText('pip install contextos')">copy</button>
+  </div>
+</div>
+
+<div class="stat-bar">
+  <div class="stat">
+    <div class="stat-num" style="color:#FF3D00">47</div>
+    <div class="stat-label">MCP TOOLS</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" style="color:#7B2FFF">5</div>
+    <div class="stat-label">LAYERS</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" style="color:#00A3FF">6</div>
+    <div class="stat-label">REPOS UNIFIED</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" style="color:#00E57A">361k+</div>
+    <div class="stat-label">COMBINED STARS</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" style="color:#FFB800">1</div>
+    <div class="stat-label">PIP INSTALL</div>
+  </div>
+</div>
+
+<!-- LAYERS -->
+<section id="layers">
+  <div class="section-tag">ARCHITECTURE</div>
+  <h2>Five layers.<br>All talking to each other.</h2>
+  <p class="section-sub">Every layer in ContextOS was either missing from existing tools or existed in isolation. ContextOS wires them into one coherent stack.</p>
+
+  <div class="layers-grid">
+    <div class="layer-card">
+      <div class="layer-icon">⚡</div>
+      <div class="layer-name" style="color:#FF3D00">ORCHESTRATION CORE</div>
+      <div class="layer-desc">The entry point for every request. Classifies intent, routes to the right layer, traces execution, and tracks cost. This layer did not exist in any source repo.</div>
+      <div class="layer-chips">
+        <span class="chip chip-new">Intent Router</span>
+        <span class="chip chip-new">Cost Ledger</span>
+        <span class="chip chip-new">Request Tracing</span>
+        <span class="chip chip-new">Schema Registry</span>
+      </div>
+    </div>
+    <div class="layer-card">
+      <div class="layer-icon">🧠</div>
+      <div class="layer-name" style="color:#7B2FFF">MEMORY LAYER</div>
+      <div class="layer-desc">Cross-session persistent memory with hot/warm/cold tiering, entity graph, and conflict resolution. claude-mem gave us the pattern — ContextOS makes it last.</div>
+      <div class="layer-chips">
+        <span class="chip chip-absorbed">claude-mem</span>
+        <span class="chip chip-new">Cross-Session</span>
+        <span class="chip chip-new">Entity Graph</span>
+        <span class="chip chip-new">Tiering</span>
+      </div>
+    </div>
+    <div class="layer-card">
+      <div class="layer-icon">🔍</div>
+      <div class="layer-name" style="color:#00A3FF">RETRIEVAL LAYER</div>
+      <div class="layer-desc">Hybrid BM25 + vector search across multiple corpora with staleness detection and a feedback loop that improves routing over time.</div>
+      <div class="layer-chips">
+        <span class="chip chip-absorbed">ragflow</span>
+        <span class="chip chip-absorbed">context7</span>
+        <span class="chip chip-new">Hybrid Search</span>
+        <span class="chip chip-new">Feedback Loop</span>
+      </div>
+    </div>
+    <div class="layer-card">
+      <div class="layer-icon">🔧</div>
+      <div class="layer-name" style="color:#00E57A">TOOL EXECUTION</div>
+      <div class="layer-desc">DAG pipeline execution, output caching, per-tool retry policies, and version pinning. composio gave us 1000+ integrations — ContextOS gives them a backbone.</div>
+      <div class="layer-chips">
+        <span class="chip chip-absorbed">composio</span>
+        <span class="chip chip-absorbed">MCP Servers</span>
+        <span class="chip chip-new">DAG Pipelines</span>
+        <span class="chip chip-new">Output Caching</span>
+      </div>
+    </div>
+    <div class="layer-card">
+      <div class="layer-icon">📋</div>
+      <div class="layer-name" style="color:#FFB800">PLANNING & SPEC</div>
+      <div class="layer-desc">Spec-driven execution that revises mid-plan, propagates constraint failures, and evaluates outcome against original spec. Includes the Pre-Response Sparring Hook.</div>
+      <div class="layer-chips">
+        <span class="chip chip-absorbed">get-shit-done</span>
+        <span class="chip chip-absorbed">Prompt Guide</span>
+        <span class="chip chip-new">Sparring Hook</span>
+        <span class="chip chip-new">Dynamic Revision</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section id="sources" style="background:var(--surface); border-radius:0; padding:96px 48px; max-width:100%;">
+  <div style="max-width:1100px; margin:0 auto;">
+    <div class="section-tag">BUILT ON</div>
+    <h2>Six giants.<br>Unified.</h2>
+    <p class="section-sub">ContextOS was built with respect for every project that came before it. Here is what each one contributed — and what was missing.</p>
+
+    <div class="repos-grid">
+      <a href="https://github.com/modelcontextprotocol/servers" class="repo-card" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">modelcontextprotocol/servers</div>
+          <div class="repo-stars">★ 80.5k</div>
+        </div>
+        <div class="repo-desc">The MCP protocol standard. ContextOS is 100% compatible and speaks MCP natively.</div>
+        <div class="repo-gap">Missing: Memory, retrieval, planning, orchestration — everything above the protocol layer.</div>
+      </a>
+      <a href="https://github.com/infiniflow/ragflow" class="repo-card" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">infiniflow/ragflow</div>
+          <div class="repo-stars">★ 74.4k</div>
+        </div>
+        <div class="repo-desc">Production-grade RAG engine with deep document understanding and agent capabilities.</div>
+        <div class="repo-gap">Missing: Cross-session state, staleness detection, multi-corpus routing, feedback loop.</div>
+      </a>
+      <a href="https://github.com/dair-ai/Prompt-Engineering-Guide" class="repo-card" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">dair-ai/Prompt-Engineering-Guide</div>
+          <div class="repo-stars">★ 71.3k</div>
+        </div>
+        <div class="repo-desc">The definitive prompt engineering corpus. Powers ContextOS's planning layer spec templates.</div>
+        <div class="repo-gap">Missing: Runtime integration, prompt versioning, outcome measurement.</div>
+      </a>
+      <a href="https://github.com/upstash/context7" class="repo-card" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">upstash/context7</div>
+          <div class="repo-stars">★ 48.2k</div>
+        </div>
+        <div class="repo-desc">Live, version-specific library documentation injection for LLMs. Elegant solution to the stale-docs problem.</div>
+        <div class="repo-gap">Missing: Memory layer, caching, session continuity — purely stateless.</div>
+      </a>
+      <a href="https://github.com/thedotmack/claude-mem" class="repo-card" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">thedotmack/claude-mem</div>
+          <div class="repo-stars">★ 33.5k</div>
+        </div>
+        <div class="repo-desc">Captures and compresses Claude coding sessions. 33k stars = real developer pain around agent memory.</div>
+        <div class="repo-gap">Missing: Memory dies with the session. No persistence, tiering, entity graph, or conflict resolution.</div>
+      </a>
+      <a href="https://github.com/ComposioHQ/composio" class="repo-card" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">ComposioHQ/composio</div>
+          <div class="repo-stars">★ 27.3k</div>
+        </div>
+        <div class="repo-desc">1000+ tool integrations with managed auth. The best solution for agent-to-API connectivity.</div>
+        <div class="repo-gap">Missing: Tool chaining, output caching, retry policies, version pinning, cost tracking.</div>
+      </a>
+      <a href="https://github.com/gsd-build/get-shit-done" class="repo-card" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">gsd-build/get-shit-done</div>
+          <div class="repo-stars">★ 26.5k</div>
+        </div>
+        <div class="repo-desc">Spec-driven development system for Claude Code. Forces structure before execution.</div>
+        <div class="repo-gap">Missing: Dynamic plan revision, constraint propagation, spec versioning, outcome evaluation, Pre-Response Sparring Hook.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SPARRING HOOK -->
+<section id="sparring">
+  <div class="section-tag">UNIQUE TO CONTEXTOS</div>
+  <h2>The Pre-Response<br>Sparring Hook.</h2>
+  <p class="section-sub">Before any agent output fires, ContextOS asks: do I have enough information to act on this correctly, or am I just pattern-matching? No other repo in this space has this.</p>
+
+  <div class="sparring-demo">
+    <div class="demo-header">
+      <div class="demo-dot" style="background:#FF3D00"></div>
+      <div class="demo-title">plan_spar tool · pre-response evaluation</div>
+    </div>
+    <div class="demo-body">
+      <div class="demo-line">
+        <div class="demo-key" style="color:#FF7A40">REQUEST</div>
+        <div class="demo-val">"Delete all campaigns with ROAS below 2.0"</div>
+      </div>
+      <div class="demo-line">
+        <div class="demo-key" style="color:#00A3FF">CONTEXT</div>
+        <div class="demo-val">Q4 budget planning session</div>
+      </div>
+      <div class="demo-line" style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border)">
+        <div class="demo-key" style="color:#FFB800">VERDICT</div>
+        <div class="demo-val"><span class="verdict-hold">HOLD</span></div>
+      </div>
+      <div class="demo-line">
+        <div class="demo-key" style="color:#FFB800">REASON</div>
+        <div class="demo-val">Operation is irreversible. 23 campaigns would be deleted. No confirmation that brand campaigns are excluded from the ROAS threshold.</div>
+      </div>
+      <div class="demo-line">
+        <div class="demo-key" style="color:#FF7A40">WARNING</div>
+        <div class="demo-val">Pattern match: "low-ROAS cleanup". Q4 pre-holiday context may make these campaigns strategic, not inefficient.</div>
+      </div>
+      <div class="demo-line">
+        <div class="demo-key" style="color:#00E57A">ACTION</div>
+        <div class="demo-val">Request confirmation with campaign list preview before executing.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="section-tag">MCP TOOLS</div>
+  <h2>47 tools.<br>One protocol.</h2>
+  <p class="section-sub">Every tool in ContextOS speaks MCP natively and works with Claude Desktop, Cursor, Windsurf, LangChain, and the OpenAI Agents SDK.</p>
+
+  <div class="tools-count">
+    <div class="tool-cat"><div class="tool-cat-num" style="color:#7B2FFF">9</div><div class="tool-cat-name">MEMORY</div></div>
+    <div class="tool-cat"><div class="tool-cat-num" style="color:#00A3FF">8</div><div class="tool-cat-name">RETRIEVAL</div></div>
+    <div class="tool-cat"><div class="tool-cat-num" style="color:#00E57A">12</div><div class="tool-cat-name">TOOLS</div></div>
+    <div class="tool-cat"><div class="tool-cat-num" style="color:#FFB800">9</div><div class="tool-cat-name">PLANNING</div></div>
+    <div class="tool-cat"><div class="tool-cat-num" style="color:#FF3D00">9</div><div class="tool-cat-name">ORCHESTRATION</div></div>
+  </div>
+
+  <div style="margin-top:32px; text-align:center;">
+    <a href="https://github.com/itallstartedwithaidea/contextOS/wiki/MCP-Tools-Reference" class="btn-secondary" target="_blank" style="display:inline-block">View full tools reference →</a>
+  </div>
+</section>
+
+<!-- INSTALL SECTION -->
+<div class="install-section">
+  <h2>Start in 30 seconds.</h2>
+  <p>One install. All five layers. 47 MCP tools ready.</p>
+  <div class="code-block">
+    <div><span class="code-comment"># Install</span></div>
+    <div><span class="code-green">pip install</span> contextos</div>
+    <br>
+    <div><span class="code-comment"># Start MCP server</span></div>
+    <div><span class="code-green">from</span> contextos <span class="code-green">import</span> ContextOS</div>
+    <div>ctx = ContextOS(<span class="code-orange">workspace</span>=<span class="code-blue">"my-agent"</span>)</div>
+    <div>ctx.serve(<span class="code-orange">port</span>=<span class="code-blue">8080</span>)</div>
+  </div>
+  <br>
+  <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+    <a href="https://github.com/itallstartedwithaidea/contextOS" class="btn-primary" target="_blank">GitHub Repository</a>
+    <a href="https://github.com/itallstartedwithaidea/contextOS/wiki" class="btn-secondary" target="_blank">Documentation</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Context<span>OS</span></div>
+  <div class="footer-links">
+    <a href="https://github.com/itallstartedwithaidea/contextOS" target="_blank">GitHub</a>
+    <a href="https://github.com/itallstartedwithaidea/contextOS/wiki" target="_blank">Wiki</a>
+    <a href="https://github.com/itallstartedwithaidea/contextOS/wiki/Credits-and-Origins" target="_blank">Credits</a>
+    <a href="https://github.com/itallstartedwithaidea/contextOS/issues" target="_blank">Issues</a>
+    <a href="https://github.com/itallstartedwithaidea/contextOS/blob/main/LICENSE" target="_blank">MIT License</a>
+  </div>
+  <div class="footer-credit">Built by IASAWI · John Williams · Standing on 361k+ stars</div>
+</footer>
+
+</body>
+</html>
