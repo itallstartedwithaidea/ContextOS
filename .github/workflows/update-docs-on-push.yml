@@ -1,0 +1,26 @@
+name: Update Technical Docs on Push
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'contextOS/**'
+      - 'README.md'
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update llms.txt timestamp
+        run: |
+          sed -i "s/updated:.*/updated: $(date -u +%Y-%m-%d)/" llms.txt
+
+      - name: Commit docs updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add llms.txt
+          git diff --staged --quiet || git commit -m "docs: auto-update timestamp [ci skip]"
+          git push

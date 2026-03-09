@@ -1,0 +1,26 @@
+name: Sync Upstream Doc Sources
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check upstream repos for new releases
+        run: |
+          CHUB=$(curl -s https://api.github.com/repos/andrewyng/context-hub/releases/latest | jq -r '.tag_name // "no-release"')
+          C7=$(curl -s https://api.github.com/repos/upstash/context7/releases/latest | jq -r '.tag_name // "no-release"')
+          echo "{ \"context-hub\": \"$CHUB\", \"context7\": \"$C7\", \"updated\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\" }" > docs/upstream-versions.json
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/upstream-versions.json
+          git diff --staged --quiet || git commit -m "chore: sync upstream versions [automated]"
+          git push

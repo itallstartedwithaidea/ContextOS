@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "ContextOS absorbs and extends the following projects. Please credit them too."
+title: "ContextOS: The Unified Context Intelligence Layer"
+authors:
+  - name: "John Williams"
+    alias: "itallstartedwithaidea"
+license: MIT
+repository-code: "https://github.com/itallstartedwithaidea/ContextOS"
+references:
+  - type: software
+    title: "context-hub"
+    authors:
+      - name: "Andrew Ng"
+    repository-code: "https://github.com/andrewyng/context-hub"
+    license: MIT
+  - type: software
+    title: "context7"
+    authors:
+      - name: "Upstash"
+    repository-code: "https://github.com/upstash/context7"
+  - type: software
+    title: "claude-mem"
+    authors:
+      - name: "thedotmack"
+    repository-code: "https://github.com/thedotmack/claude-mem"
+  - type: software
+    title: "ragflow"
+    authors:
+      - name: "infiniflow"
+    repository-code: "https://github.com/infiniflow/ragflow"
+  - type: software
+    title: "composio"
+    authors:
+      - name: "ComposioHQ"
+    repository-code: "https://github.com/ComposioHQ/composio"
+  - type: software
+    title: "model-context-protocol servers"
+    authors:
+      - name: "Anthropic"
+    repository-code: "https://github.com/modelcontextprotocol/servers"

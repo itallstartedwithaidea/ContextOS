@@ -1,0 +1,42 @@
+# ContextOS
+> Unified context intelligence layer for AI agents
+> pip install contextos
+
+updated: 2025-03-09
+
+## What It Is
+ContextOS is a single MCP server and CLI that absorbs and extends seven
+leading open-source AI agent repositories into one unified platform.
+
+## Install
+pip install contextos
+
+## CLI
+ctx docs search <query>
+ctx docs get <id> --lang py|js|ts
+ctx docs annotate <id> "note"
+ctx docs feedback <id> up|down
+ctx memory store|retrieve|forget|summarize
+ctx retrieve docs|live|web|code
+ctx plan create|spar|evaluate
+ctx health
+
+## chub-compatible
+All context-hub (chub) commands work as ctx docs subcommands.
+ctx docs import chub  # migrate existing annotations
+
+## Absorbs
+- andrewyng/context-hub    (doc intelligence)
+- upstash/context7         (live doc fetching)
+- thedotmack/claude-mem    (memory layer)
+- infiniflow/ragflow        (retrieval engine)
+- ComposioHQ/composio      (tool execution)
+- gsd-build/get-shit-done  (planning + spec)
+- modelcontextprotocol/servers (MCP protocol)
+
+## MCP Tools
+55 tools across: memory (9), retrieval (8), tools (12),
+planning (9), orchestration (9), doc intelligence (8)
+
+## Source
+https://github.com/itallstartedwithaidea/ContextOS
