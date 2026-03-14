@@ -16,7 +16,7 @@ class ContextOSConfig:
 
     # Identity
     workspace: str = "default"
-    version: str = "0.1.0"
+    version: str = "0.2.0"
 
     # Memory
     memory_tier: Literal["hot", "warm", "cold"] = "warm"
@@ -28,6 +28,25 @@ class ContextOSConfig:
     retrieval_mode: Literal["vector", "bm25", "hybrid"] = "hybrid"
     retrieval_staleness_ttl_days: int = 30
     retrieval_feedback_loop: bool = True
+
+    # Retrieval Router (new — churn-aware routing)
+    churn_aware_routing: bool = True
+    active_embedding_model: str = "all-MiniLM-L6-v2"
+    active_embedding_model_version: str = "1.0.0"
+
+    # Index Lifecycle (new — self-healing indexes)
+    index_heartbeat_interval_seconds: int = 300
+    index_circuit_breaker_threshold: int = 3
+    index_circuit_breaker_cooldown_seconds: int = 300
+
+    # Cognition (new — the thinking layer)
+    cognition_enabled: bool = True
+    cognition_budget_tokens: int = 8000
+    cognition_active_forgetting: bool = True
+    cognition_contradiction_detection: bool = True
+    cognition_unknown_unknown_sensing: bool = True
+    cognition_depth_calibration: bool = True
+    cognition_gravity_reweighting: bool = True
 
     # Tools
     tools: list[str] = field(default_factory=lambda: ["mcp"])
@@ -71,6 +90,17 @@ class ContextOS:
       - Tool DAG execution with caching and retry policies
       - Pre-Response Sparring Hook
       - Full request tracing and cost ledger
+
+    v0.2.0 — The Cognition Update:
+      - Cognition Layer: six cognitive primitives (active forgetting,
+        reasoning depth calibration, synthesis detection, unknown-unknown
+        sensing, productive contradiction, context-dependent gravity)
+      - Retrieval Router: churn-aware routing per data source
+      - Index Lifecycle Manager: self-healing, event-driven re-indexing
+        with circuit breakers and embedding model drift detection
+
+    The industry builds: retrieve → generate
+    ContextOS builds: retrieve → THINK → generate
     """
 
     def __init__(self, config: Optional[ContextOSConfig] = None, **kwargs):
@@ -87,6 +117,7 @@ class ContextOS:
                 memory_tier="warm",
                 retrieval_mode="hybrid",
                 sparring_hook=True,
+                cognition_enabled=True,
             )
         """
         if config is None:
@@ -103,23 +134,32 @@ class ContextOS:
         self._bootstrap()
 
     def _bootstrap(self):
-        """Initialize all five layers in dependency order."""
+        """Initialize all layers in dependency order."""
         from .orchestration import OrchestrationCore
         from .memory import MemoryLayer
         from .retrieval import RetrievalLayer
         from .tools import ToolLayer
         from .planning import PlanningLayer
+        from .cognition import CognitionLayer
+        from .router import RetrievalRouter
+        from .indexer import IndexLifecycleManager
 
+        # Core layers
         self._layers["orchestration"] = OrchestrationCore(self.config)
         self._layers["memory"] = MemoryLayer(self.config)
         self._layers["retrieval"] = RetrievalLayer(self.config)
         self._layers["tools"] = ToolLayer(self.config)
         self._layers["planning"] = PlanningLayer(self.config)
 
+        # Cognition update layers
+        self._layers["cognition"] = CognitionLayer(self.config)
+        self._layers["router"] = RetrievalRouter(self.config)
+        self._layers["indexer"] = IndexLifecycleManager(self.config, self._layers["router"])
+
         # Wire layers together
         self._layers["orchestration"].register_layers(self._layers)
         self._initialized = True
-        logger.info("ContextOS fully initialized. 47 MCP tools ready.")
+        logger.info("ContextOS fully initialized. 8 layers active. 55 MCP tools ready.")
 
     def serve(self, host: Optional[str] = None, port: Optional[int] = None):
         """
@@ -150,6 +190,18 @@ class ContextOS:
         """Access the planning layer directly."""
         return self._layers["planning"]
 
+    def cognition(self) -> "CognitionLayer":
+        """Access the cognition (thinking) layer directly."""
+        return self._layers["cognition"]
+
+    def router(self) -> "RetrievalRouter":
+        """Access the churn-aware retrieval router directly."""
+        return self._layers["router"]
+
+    def indexer(self) -> "IndexLifecycleManager":
+        """Access the index lifecycle manager directly."""
+        return self._layers["indexer"]
+
     def health(self) -> dict:
         """Return health status of all layers."""
         return {
@@ -165,5 +217,6 @@ class ContextOS:
         return (
             f"ContextOS(workspace='{self.config.workspace}', "
             f"version='{self.config.version}', "
+            f"layers={len(self._layers)}, "
             f"initialized={self._initialized})"
         )

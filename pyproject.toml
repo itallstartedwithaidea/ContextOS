@@ -4,8 +4,8 @@ build-backend = "setuptools.backends.legacy:build"
 
 [project]
 name = "contextos"
-version = "0.1.0"
-description = "The unified context intelligence layer for AI agents. One pip install. Every capability. Nothing missing."
+version = "0.2.0"
+description = "The unified context intelligence layer for AI agents. Retrieve, THINK, then generate. 8 layers, 67 MCP tools, 6 cognitive primitives."
 readme = "README.md"
 license = { text = "MIT" }
 authors = [
@@ -14,7 +14,8 @@ authors = [
 keywords = [
     "mcp", "model-context-protocol", "ai-agents", "llm", "rag",
     "memory", "context-management", "ai-agent-memory", "langchain",
-    "claude", "openai", "retrieval-augmented-generation"
+    "claude", "openai", "retrieval-augmented-generation",
+    "cognition", "agent-reasoning", "churn-aware-retrieval"
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -24,6 +25,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 requires-python = ">=3.10"
@@ -46,6 +48,8 @@ full = [
     "psycopg2-binary>=2.9.9",
     "composio-core>=0.5.0",
     "ragflow-client>=0.1.0",
+    "sentence-transformers>=3.0.0",
+    "tantivy>=0.22.0",
 ]
 dev = [
     "pytest>=8.0.0",
