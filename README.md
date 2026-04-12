@@ -1,5 +1,7 @@
 # ContextOS
 
+[English](README.md) | [Français](README.fr.md) | [Español](README.es.md) | [中文](README.zh.md) | [Nederlands](README.nl.md) | [Русский](README.ru.md) | [한국어](README.ko.md)
+
 > **The unified context intelligence layer for AI agents.**  
 > One pip install. Every capability. Nothing missing.
 
